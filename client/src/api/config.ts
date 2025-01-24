@@ -31,7 +31,15 @@ export const handleResponse = async (response: Response) => {
 // Helper function to check server health
 export const checkServerHealth = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
+    const response = await fetch(`${API_BASE_URL}/health`, {
+      method: 'GET',
+      headers: {
+        ...getCommonHeaders(),
+        'Accept': 'application/json'
+      },
+      credentials: 'include',
+      mode: 'cors'
+    });
     const data = await response.json();
     return data.status === 'healthy';
   } catch (error) {

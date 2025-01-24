@@ -14,7 +14,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Configure CORS with specific options
 const allowedOrigins = isProduction 
-  ? ['https://replicantcoder9000.github.io']
+  ? ['https://replicantcoder9000.github.io', 'https://kanban-board.onrender.com']
   : ['http://localhost:5173']; // Vite's default dev server port
 
 if (process.env.CLIENT_URL) {
@@ -22,30 +22,27 @@ if (process.env.CLIENT_URL) {
 }
 
 const corsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   exposedHeaders: ['Set-Cookie'],
-  preflightContinue: true,
+  maxAge: 86400, // 24 hours in seconds
   optionsSuccessStatus: 204
 };
 
-// Enable pre-flight requests for all routes
-app.options('*', cors(corsOptions));
-
-// Apply CORS to all routes
+// Enable CORS with options
 app.use(cors(corsOptions));
 
 // Add security headers
 app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
 });
 
