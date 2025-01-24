@@ -28,8 +28,8 @@ jobs:
           cd client
           npm run build
           cp public/404.html dist/
-          cp dist/index.html dist/404.html
           touch dist/.nojekyll
+          echo "/* /index.html 200" > dist/_redirects
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
