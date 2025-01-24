@@ -1,8 +1,10 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 interface CustomJwtPayload extends JwtPayload {
-  username: string;
-  id: number;
+  email: string;
+  sub: string;
+  role: string;
+  aud: string;
 }
 
 class AuthService {
@@ -38,7 +40,7 @@ class AuthService {
       const decoded = jwtDecode<CustomJwtPayload & { exp: number }>(token);
       const isExpired = decoded.exp < Date.now() / 1000;
       if (isExpired) {
-        localStorage.removeItem('id_token');
+        localStorage.removeItem('token');
       }
       return isExpired;
     } catch (err) {
@@ -48,20 +50,20 @@ class AuthService {
   }
 
   getToken(): string {
-    const token = localStorage.getItem('id_token') || '';
+    const token = localStorage.getItem('token') || '';
     console.log('Retrieved token:', token ? 'exists' : 'none'); // Debug log
     return token;
   }
 
-  login(idToken: string) {
-    console.log('Setting token:', idToken ? 'exists' : 'none'); // Debug log
-    localStorage.setItem('id_token', idToken);
+  login(token: string) {
+    console.log('Setting token:', token ? 'exists' : 'none'); // Debug log
+    localStorage.setItem('token', token);
     window.location.assign('/board');
   }
 
   logout() {
     console.log('Removing token'); // Debug log
-    localStorage.removeItem('id_token');
+    localStorage.removeItem('token');
     window.location.assign('/');
   }
 }
