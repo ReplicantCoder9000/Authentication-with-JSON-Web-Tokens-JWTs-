@@ -5,6 +5,7 @@ interface CustomJwtPayload extends JwtPayload {
   sub: string;
   role: string;
   aud: string;
+  id?: string; // Maps to sub for backward compatibility
 }
 
 class AuthService {
@@ -13,8 +14,13 @@ class AuthService {
     if (!token) return null;
     try {
       const decoded = jwtDecode<CustomJwtPayload>(token);
-      console.log('Decoded token:', decoded); // Debug log
-      return decoded;
+      // Map sub to id for backward compatibility
+      const profile = {
+        ...decoded,
+        id: decoded.sub
+      };
+      console.log('Decoded token:', profile); // Debug log
+      return profile;
     } catch (err) {
       console.error('Error decoding token:', err); // Debug log
       return null;
