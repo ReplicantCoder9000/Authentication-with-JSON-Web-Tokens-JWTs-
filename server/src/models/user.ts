@@ -19,6 +19,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   // Compare password method
   public async comparePassword(candidatePassword: string): Promise<boolean> {
+    console.log({ candidatePassword, hashedPassword: this.getDataValue('password') });
     return bcrypt.compare(candidatePassword, this.getDataValue('password'));
   }
 }
