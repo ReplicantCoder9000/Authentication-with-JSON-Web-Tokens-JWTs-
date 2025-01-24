@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Update submodules
+        run: |
+          git submodule update --init --recursive
+
       - name: Install dependencies
         run: |
           cd client
@@ -41,3 +45,7 @@ jobs:
           commit_message: "Deploy to GitHub Pages"
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clean up submodules
+        run: |
+          git submodule deinit --all --force
