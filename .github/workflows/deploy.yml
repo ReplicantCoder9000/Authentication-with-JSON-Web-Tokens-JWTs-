@@ -27,6 +27,7 @@ jobs:
         run: |
           cd client
           npm run build
+          cp public/404.html dist/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
