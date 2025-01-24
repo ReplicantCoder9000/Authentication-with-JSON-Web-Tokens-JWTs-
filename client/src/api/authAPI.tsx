@@ -1,14 +1,14 @@
 import { UserLogin } from "../interfaces/UserLogin";
-import { API_BASE_URL, getCommonHeaders, handleResponse, checkServerHealth } from './config';
+import { API_BASE_URL, getCommonHeaders, handleResponse } from './config';
 
 const login = async (userInfo: UserLogin) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
       headers: getCommonHeaders(),
       body: JSON.stringify({
-        p_username: userInfo.username,
-        p_password: userInfo.password
+        email: userInfo.username,
+        password: userInfo.password
       }),
       mode: 'cors'
     });
@@ -16,8 +16,8 @@ const login = async (userInfo: UserLogin) => {
     const data = await handleResponse(response);
     
     // Store the token in localStorage
-    if (data.token) {
-      localStorage.setItem('token', data.token);
+    if (data.access_token) {
+      localStorage.setItem('token', data.access_token);
     }
 
     return data;
@@ -38,13 +38,12 @@ const checkAuth = async () => {
       return false;
     }
 
-    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/verify_token`, {
-      method: 'POST',
+    const response = await fetch(`${API_BASE_URL}/auth/v1/user`, {
+      method: 'GET',
       headers: {
         ...getCommonHeaders(),
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ token }),
       mode: 'cors'
     });
 
