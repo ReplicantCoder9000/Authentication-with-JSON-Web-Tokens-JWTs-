@@ -11,6 +11,8 @@ export const API_BASE_URL = getBaseUrl();
 // Common headers for API requests
 export const getCommonHeaders = () => ({
   'Content-Type': 'application/json',
+  'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZteXNldmNxdnFjZGlzY3N0bnB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc3NDA4MTMsImV4cCI6MjA1MzMxNjgxM30.XprMKVG0Tw3mUtYq6YZjBXREojMlmL2FcM8jq8-fJr0',
+  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZteXNldmNxdnFjZGlzY3N0bnB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc3NDA4MTMsImV4cCI6MjA1MzMxNjgxM30.XprMKVG0Tw3mUtYq6YZjBXREojMlmL2FcM8jq8-fJr0'
 });
 
 // Helper function to handle API responses
@@ -31,17 +33,12 @@ export const handleResponse = async (response: Response) => {
 // Helper function to check server health
 export const checkServerHealth = async (): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`, {
-      method: 'GET',
-      headers: {
-        ...getCommonHeaders(),
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
+    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/check_health`, {
+      method: 'POST',
+      headers: getCommonHeaders(),
       mode: 'cors'
     });
-    const data = await response.json();
-    return data.status === 'healthy';
+    return response.ok;
   } catch (error) {
     console.error('Server health check failed:', error);
     return false;

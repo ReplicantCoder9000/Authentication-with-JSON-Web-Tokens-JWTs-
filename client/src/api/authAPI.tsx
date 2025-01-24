@@ -3,21 +3,14 @@ import { API_BASE_URL, getCommonHeaders, handleResponse, checkServerHealth } fro
 
 const login = async (userInfo: UserLogin) => {
   try {
-    // Check server health before attempting login
-    const isHealthy = await checkServerHealth();
-    if (!isHealthy) {
-      throw new Error('Authentication server is not available. Please try again later.');
-    }
-
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/login`, {
       method: 'POST',
-      headers: {
-        ...getCommonHeaders(),
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(userInfo),
-      credentials: 'include', // Include cookies for cross-origin requests
-      mode: 'cors' // Explicitly set CORS mode
+      headers: getCommonHeaders(),
+      body: JSON.stringify({
+        p_username: userInfo.username,
+        p_password: userInfo.password
+      }),
+      mode: 'cors'
     });
 
     const data = await handleResponse(response);
@@ -45,14 +38,13 @@ const checkAuth = async () => {
       return false;
     }
 
-    const response = await fetch(`${API_BASE_URL}/verify`, {
-      method: 'GET',
+    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/verify_token`, {
+      method: 'POST',
       headers: {
         ...getCommonHeaders(),
-        'Accept': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      credentials: 'include',
+      body: JSON.stringify({ token }),
       mode: 'cors'
     });
 
