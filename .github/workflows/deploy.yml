@@ -29,6 +29,16 @@ jobs:
           npm run build
           touch dist/.nojekyll
 
+      - name: Handle invalid tree info error
+        run: |
+          git update-ref -d refs/heads/gh-pages
+          git fetch origin gh-pages
+          git checkout -b gh-pages origin/gh-pages
+          git rm -rf .
+          git clean -fdx
+          git commit --allow-empty -m "Initial commit"
+          git push origin gh-pages
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
