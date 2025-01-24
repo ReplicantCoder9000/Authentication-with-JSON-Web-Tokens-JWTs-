@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
+      contents: write # Required to push to GitHub Pages
 
     steps:
       - name: Checkout repository
@@ -21,10 +21,23 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: |
           cd client
           npm install
+
+      - name: Clean build directory
+        run: |
+          cd client
+          rm -rf dist
 
       - name: Build
         run: |
@@ -32,12 +45,15 @@ jobs:
           npm run build
           touch dist/.nojekyll
 
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add origin https://github.com/ReplicantCoder9000/Authentication-with-JSON-Web-Tokens-JWTs-.git
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./client/dist
-          force_orphan: true
           commit_message: "Deploy to GitHub Pages"
-          user_name: "github-actions[bot]"
-          user_email: "github-actions[bot]@users.noreply.github.com"
