@@ -3,12 +3,13 @@ import { API_BASE_URL, getCommonHeaders, handleResponse } from './config';
 
 const login = async (userInfo: UserLogin) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/authenticate`, {
+    const response = await fetch(`${API_BASE_URL}/auth/v1/token`, {
       method: 'POST',
       headers: getCommonHeaders(),
       body: JSON.stringify({
-        username: userInfo.username,
-        password: userInfo.password
+        email: userInfo.username,
+        password: userInfo.password,
+        grant_type: 'password'
       }),
       mode: 'cors'
     });
