@@ -8,6 +8,7 @@ import ErrorPage from './pages/ErrorPage.tsx';
 import EditTicket from './pages/EditTicket.tsx';
 import CreateTicket from './pages/CreateTicket.tsx';
 import Login from './pages/Login.tsx';
+import ProtectedRoute from './components/ProtectedRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,23 +18,23 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Board />
-      }, 
+        element: <Login />
+      },
+      {
+        path: '/board',
+        element: <ProtectedRoute><Board /></ProtectedRoute>
+      },
       {
         path: '/edit',
-        element: <EditTicket />
+        element: <ProtectedRoute><EditTicket /></ProtectedRoute>
       },
       {
         path: '/create',
-        element: <CreateTicket />
-      },
-      {
-        path: '/login',
-        element: <Login />
+        element: <ProtectedRoute><CreateTicket /></ProtectedRoute>
       }
     ]
   }
-])
+]);
 
 const rootElement = document.getElementById('root');
 if (rootElement) {

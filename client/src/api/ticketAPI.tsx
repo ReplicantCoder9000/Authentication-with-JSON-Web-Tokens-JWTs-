@@ -55,25 +55,26 @@ const createTicket = async (body: TicketData) => {
     const response = await fetch(
       '/api/tickets/', {
         method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Auth.getToken()}`
-          },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Auth.getToken()}`
+        },
         body: JSON.stringify(body)
       }
+    );
 
-    )
-    const data = response.json();
-
+    // Check response.ok before parsing JSON
     if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'invalid API response, check network tab!');
     }
 
+    const data = await response.json();
     return data;
 
   } catch (err) {
     console.log('Error from Ticket Creation: ', err);
-    return Promise.reject('Could not create ticket');
+    throw err; // Re-throw to handle in component
   }
 }
 
@@ -125,6 +126,5 @@ const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
     return Promise.reject('Could not delete ticket');
   }
 };
-
 
 export { createTicket, deleteTicket, retrieveTickets, retrieveTicket, updateTicket};

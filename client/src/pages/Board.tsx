@@ -58,34 +58,40 @@ const Board = () => {
 
   return (
     <>
-    {
-      !loginCheck ? (
-        <div className='login-notice'>
-          <h1>
-            Login to create & view tickets
-          </h1>
-        </div>  
+      {!loginCheck ? (
+        <div className="login-notice">
+          <h1>Login to create & view tickets</h1>
+        </div>
       ) : (
-          <div className='board'>
-            <button type='button' id='create-ticket-link'>
-              <Link to='/create' >New Ticket</Link>
-            </button>
-            <div className='board-display'>
-              {boardStates.map((status) => {
-                const filteredTickets = tickets.filter(ticket => ticket.status === status);
-                return (
-                  <Swimlane 
-                    title={status} 
-                    key={status} 
-                    tickets={filteredTickets} 
-                    deleteTicket={deleteIndvTicket}
-                  />
-                );
-              })}
+        <div className="board-container fade-in">
+          <div className="board-header">
+            <div className="board-header-left">
+              <h1>Board</h1>
+              <div className="board-stats">
+                <span>{tickets.length} total tickets</span>
+              </div>
             </div>
           </div>
-        )
-    }
+
+          <div className="board-divider" />
+
+          <div className="board-scroll-container">
+            {boardStates.map((status) => {
+              const filteredTickets = tickets.filter(
+                (ticket) => ticket.status === status
+              );
+              return (
+                <Swimlane
+                  title={status}
+                  key={status}
+                  tickets={filteredTickets}
+                  deleteTicket={deleteIndvTicket}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </>
   );
 };

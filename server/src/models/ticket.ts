@@ -1,11 +1,12 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
-import { User } from './user';
+import { User } from './user.js';
 
 interface TicketAttributes {
   id: number;
   name: string;
   status: string;
   description: string;
+  priority?: string;
   assignedUserId?: number;
 }
 
@@ -16,6 +17,7 @@ export class Ticket extends Model<TicketAttributes, TicketCreationAttributes> im
   public name!: string;
   public status!: string;
   public description!: string;
+  public priority!: string;
   public assignedUserId!: number;
 
   // associated User model
@@ -40,10 +42,16 @@ export function TicketFactory(sequelize: Sequelize): typeof Ticket {
       status: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'Todo'
       },
       description: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      priority: {
+        type: DataTypes.ENUM('low', 'medium', 'high'),
+        allowNull: false,
+        defaultValue: 'medium'
       },
       assignedUserId: {
         type: DataTypes.INTEGER,
@@ -53,6 +61,7 @@ export function TicketFactory(sequelize: Sequelize): typeof Ticket {
     {
       tableName: 'tickets',
       sequelize,
+      timestamps: true
     }
   );
 

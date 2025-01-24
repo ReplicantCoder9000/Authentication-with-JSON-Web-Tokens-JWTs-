@@ -1,30 +1,68 @@
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 
+interface CustomJwtPayload extends JwtPayload {
+  username: string;
+  id: number;
+}
+
 class AuthService {
   getProfile() {
-    // TODO: return the decoded token
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      console.log('Decoded token:', decoded); // Debug log
+      return decoded;
+    } catch (err) {
+      console.error('Error decoding token:', err); // Debug log
+      return null;
+    }
   }
 
   loggedIn() {
-    // TODO: return a value that indicates if the user is logged in
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const decoded = jwtDecode<CustomJwtPayload & { exp: number }>(token);
+      const isValid = !this.isTokenExpired(token);
+      console.log('Token validation:', { decoded, isValid }); // Debug log
+      return isValid;
+    } catch (err) {
+      console.error('Error checking login status:', err); // Debug log
+      return false;
+    }
   }
   
   isTokenExpired(token: string) {
-    // TODO: return a value that indicates if the token is expired
+    try {
+      const decoded = jwtDecode<CustomJwtPayload & { exp: number }>(token);
+      const isExpired = decoded.exp < Date.now() / 1000;
+      if (isExpired) {
+        localStorage.removeItem('id_token');
+      }
+      return isExpired;
+    } catch (err) {
+      console.error('Error checking token expiration:', err); // Debug log
+      return true;
+    }
   }
 
   getToken(): string {
-    // TODO: return the token
+    const token = localStorage.getItem('id_token') || '';
+    console.log('Retrieved token:', token ? 'exists' : 'none'); // Debug log
+    return token;
   }
 
   login(idToken: string) {
-    // TODO: set the token to localStorage
-    // TODO: redirect to the home page
+    console.log('Setting token:', idToken ? 'exists' : 'none'); // Debug log
+    localStorage.setItem('id_token', idToken);
+    window.location.assign('/board');
   }
 
   logout() {
-    // TODO: remove the token from localStorage
-    // TODO: redirect to the login page
+    console.log('Removing token'); // Debug log
+    localStorage.removeItem('id_token');
+    window.location.assign('/');
   }
 }
 

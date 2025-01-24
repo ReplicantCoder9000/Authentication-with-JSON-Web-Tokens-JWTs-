@@ -17,10 +17,9 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  // Hash the password before saving the user
-  public async setPassword(password: string) {
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(password, saltRounds);
+  // Compare password method
+  public async comparePassword(candidatePassword: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, this.getDataValue('password'));
   }
 }
 
@@ -46,11 +45,15 @@ export function UserFactory(sequelize: Sequelize): typeof User {
       sequelize,
       hooks: {
         beforeCreate: async (user: User) => {
-          await user.setPassword(user.password);
+          const hashedPassword = await bcrypt.hash(user.getDataValue('password'), 10);
+          user.setDataValue('password', hashedPassword);
         },
         beforeUpdate: async (user: User) => {
-          await user.setPassword(user.password);
-        },
+          if (user.changed('password')) {
+            const hashedPassword = await bcrypt.hash(user.getDataValue('password'), 10);
+            user.setDataValue('password', hashedPassword);
+          }
+        }
       }
     }
   );
