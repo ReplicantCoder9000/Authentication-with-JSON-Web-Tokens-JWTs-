@@ -10,31 +10,36 @@ import CreateTicket from './pages/CreateTicket.tsx';
 import Login from './pages/Login.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
-const router = createHashRouter([
+const router = createHashRouter(
+  [
+    {
+      path: '/',
+      element: <App />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          index: true,
+          element: <Login />
+        },
+        {
+          path: 'board',
+          element: <ProtectedRoute><Board /></ProtectedRoute>
+        },
+        {
+          path: 'edit',
+          element: <ProtectedRoute><EditTicket /></ProtectedRoute>
+        },
+        {
+          path: 'create',
+          element: <ProtectedRoute><CreateTicket /></ProtectedRoute>
+        }
+      ]
+    }
+  ],
   {
-    path: '/',
-    element: <App />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Login />
-      },
-      {
-        path: '/board',
-        element: <ProtectedRoute><Board /></ProtectedRoute>
-      },
-      {
-        path: '/edit',
-        element: <ProtectedRoute><EditTicket /></ProtectedRoute>
-      },
-      {
-        path: '/create',
-        element: <ProtectedRoute><CreateTicket /></ProtectedRoute>
-      }
-    ]
+    basename: '/'
   }
-]);
+);
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
