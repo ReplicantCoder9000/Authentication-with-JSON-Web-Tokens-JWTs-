@@ -5,6 +5,17 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: '/Authentication-with-JSON-Web-Tokens-JWTs-/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[ext]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
+      }
+    }
+  },
   server: {
     port: 3000,
     open: true,
@@ -21,4 +32,7 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    'process.env.PUBLIC_URL': JSON.stringify('/Authentication-with-JSON-Web-Tokens-JWTs-')
+  }
 });
