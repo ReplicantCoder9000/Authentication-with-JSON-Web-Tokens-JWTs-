@@ -31,6 +31,16 @@ jobs:
           cp public/CNAME dist/
           cp dist/index.html dist/404.html
 
+      - name: Handle invalid tree info error
+        run: |
+          git update-ref -d refs/heads/gh-pages
+          git fetch origin gh-pages
+          git checkout -b gh-pages origin/gh-pages
+          git rm -rf .
+          git clean -fdx
+          git commit --allow-empty -m "Initial commit"
+          git push origin gh-pages
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
