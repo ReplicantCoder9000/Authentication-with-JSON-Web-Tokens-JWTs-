@@ -1,12 +1,4 @@
-// Get the base URL from environment variables or use a default
-const getBaseUrl = () => {
-  if (import.meta.env.PROD) {
-    return import.meta.env.VITE_API_URL || window.location.origin;
-  }
-  return 'http://localhost:3002'; // Development server URL
-};
-
-export const API_BASE_URL = getBaseUrl();
+export const API_BASE_URL = 'https://fmysevcqvqcdiscstnpv.supabase.co';
 
 // Common headers for API requests
 export const getCommonHeaders = () => ({
@@ -28,19 +20,4 @@ export const handleResponse = async (response: Response) => {
     }
   }
   return response.json();
-};
-
-// Helper function to check server health
-export const checkServerHealth = async (): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/check_health`, {
-      method: 'POST',
-      headers: getCommonHeaders(),
-      mode: 'cors'
-    });
-    return response.ok;
-  } catch (error) {
-    console.error('Server health check failed:', error);
-    return false;
-  }
 };

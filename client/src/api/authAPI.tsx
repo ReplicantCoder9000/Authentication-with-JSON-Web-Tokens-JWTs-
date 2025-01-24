@@ -3,11 +3,11 @@ import { API_BASE_URL, getCommonHeaders, handleResponse } from './config';
 
 const login = async (userInfo: UserLogin) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/v1/token?grant_type=password`, {
+    const response = await fetch(`${API_BASE_URL}/rest/v1/rpc/authenticate`, {
       method: 'POST',
       headers: getCommonHeaders(),
       body: JSON.stringify({
-        email: userInfo.username,
+        username: userInfo.username,
         password: userInfo.password
       }),
       mode: 'cors'
@@ -16,8 +16,8 @@ const login = async (userInfo: UserLogin) => {
     const data = await handleResponse(response);
     
     // Store the token in localStorage
-    if (data.access_token) {
-      localStorage.setItem('token', data.access_token);
+    if (data.token) {
+      localStorage.setItem('token', data.token);
     }
 
     return data;
