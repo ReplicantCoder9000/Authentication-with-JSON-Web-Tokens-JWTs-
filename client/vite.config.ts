@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Authentication-with-JSON-Web-Tokens-JWTs-/',
+  base: process.env.NODE_ENV === 'production' ? '/Authentication-with-JSON-Web-Tokens-JWTs-/' : '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
