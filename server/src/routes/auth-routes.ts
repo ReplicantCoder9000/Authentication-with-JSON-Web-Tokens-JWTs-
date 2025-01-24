@@ -19,7 +19,7 @@ router.route('/login')
   .post(async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
-      console.log('Login attempt:', { username }); // Log login attempts
+      console.log('Login attempt:', { username, password }); // Log login attempts
 
       // Find user by username
       const user = await User.findOne({ where: { username } });
